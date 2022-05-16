@@ -34,7 +34,6 @@ RUN docker-php-ext-install \
     mbstring \
     pdo \
     pdo_mysql \
-    tokenizer \
     xml \
     pcntl \
     bcmath \
@@ -44,7 +43,13 @@ RUN docker-php-ext-install \
     gettext \
     soap \
     sockets \
-    xsl
+    xsl 
+
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "8" ] && [ $(php -r "echo PHP_MINOR_VERSION;") = "1" ]; then \
+    php -m | grep -q 'tokenizer'; \
+  else \
+    docker-php-ext-install tokenizer; \
+  fi
 
 RUN docker-php-ext-configure gd --with-freetype=/usr/lib/ --with-jpeg=/usr/lib/ && \
     docker-php-ext-install gd
